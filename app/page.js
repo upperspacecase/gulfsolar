@@ -47,7 +47,7 @@ const caseStudies = [
 export default function Home() {
   return (
     <div className="min-h-screen bg-slate-900">
-      <div className="relative min-h-screen bg-[url('/gettyimages-836208384-2048x2048.jpg')] bg-cover bg-center p-6 md:p-10">
+      <div className="relative min-h-screen bg-[url('/hcrop1450x1208@stretch@crop2@2x.png')] bg-cover bg-center p-6 md:p-10">
         <div className="mx-auto h-[calc(100vh-48px)] max-w-6xl rounded-[2px] bg-white/95 p-4 shadow-soft md:h-[calc(100vh-80px)] md:p-6">
           <div className="h-full overflow-y-auto rounded-[26px] bg-white">
             <section

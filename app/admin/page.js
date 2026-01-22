@@ -25,6 +25,7 @@ export default function AdminPage() {
     JSON.stringify(defaultSettings, null, 2)
   );
   const [status, setStatus] = useState("");
+  const [isAuthed, setIsAuthed] = useState(false);
 
   const fetchSettings = async () => {
     setStatus("Loading settings...");
@@ -71,6 +72,28 @@ export default function AdminPage() {
     setStatus("Saved.");
   };
 
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    if (!password.trim()) {
+      setStatus("Enter a password.");
+      return;
+    }
+    setStatus("Checking password...");
+    const res = await fetch("/api/calculator", {
+      headers: {
+        Authorization: `Bearer ${password}`,
+      },
+    });
+    if (!res.ok) {
+      setStatus("Incorrect password.");
+      return;
+    }
+    const data = await res.json();
+    setJsonText(JSON.stringify(data.settings, null, 2));
+    setIsAuthed(true);
+    setStatus("");
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 px-6 py-12">
       <div className="mx-auto w-full max-w-4xl rounded-3xl bg-white/95 p-8 text-slate-900 shadow-soft">
@@ -79,37 +102,51 @@ export default function AdminPage() {
           Edit calculator settings (password required).
         </p>
 
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <label className="form-control w-full sm:max-w-xs">
-            <span className="label-text text-sm font-medium">Admin Password</span>
-            <input
-              type="password"
-              className="input input-bordered w-full"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="Enter admin password"
-            />
-          </label>
-          <div className="flex gap-3">
-            <button className="btn btn-outline" onClick={fetchSettings}>
-              Load
+        {!isAuthed ? (
+          <form
+            onSubmit={handleLogin}
+            className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-end"
+          >
+            <label className="form-control w-full sm:max-w-xs">
+              <span className="label-text text-sm font-medium">
+                Enter password
+              </span>
+              <input
+                type="password"
+                className="input input-bordered w-full"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="Admin password"
+              />
+            </label>
+            <button type="submit" className="btn btn-primary">
+              Continue
             </button>
-            <button className="btn btn-primary" onClick={saveSettings}>
-              Save
-            </button>
-          </div>
-        </div>
-
-        <div className="mt-6">
-          <label className="form-control">
-            <span className="label-text text-sm font-medium">Settings JSON</span>
-            <textarea
-              className="textarea textarea-bordered mt-2 min-h-[320px] font-mono text-xs"
-              value={jsonText}
-              onChange={(event) => setJsonText(event.target.value)}
-            />
-          </label>
-        </div>
+          </form>
+        ) : (
+          <>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <button className="btn btn-outline" onClick={fetchSettings}>
+                Reload
+              </button>
+              <button className="btn btn-primary" onClick={saveSettings}>
+                Save changes
+              </button>
+            </div>
+            <div className="mt-6">
+              <label className="form-control">
+                <span className="label-text text-sm font-medium">
+                  Settings JSON
+                </span>
+                <textarea
+                  className="textarea textarea-bordered mt-2 min-h-[320px] font-mono text-xs"
+                  value={jsonText}
+                  onChange={(event) => setJsonText(event.target.value)}
+                />
+              </label>
+            </div>
+          </>
+        )}
 
         {status ? (
           <p className="mt-4 text-sm text-slate-600">{status}</p>
