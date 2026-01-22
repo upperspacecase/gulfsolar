@@ -1,0 +1,16 @@
+{
+  "currency": "NZD",
+  "regionLabel": "Waiheke Island & Hauraki Gulf",
+  "ratePerKwh": 0.34,
+  "dailySunHours": 4.2,
+  "systemEfficiency": 0.82,
+  "coverageTarget": 0.85,
+  "systemCostPerKw": 2400,
+  "savingsMultiplier": 0.92,
+  "rangeBuffer": 0.15,
+  "assumptions": [
+    "Based on typical Waiheke solar yield and local rates",
+    "Assumes north-facing roof or equivalent output",
+    "Ranges shown for clarity, not guaranteed savings"
+  ]
+}
