@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Sky, Stars } from "@react-three/drei";
-import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -21,19 +20,21 @@ const SCROLL_CYCLE_REPEAT = 3;
 
 const EXPOSURE_DAY = 0.76;
 const EXPOSURE_NIGHT = 0.62;
-const BLOOM_INTENSITY_DAY = 0.18;
-const BLOOM_INTENSITY_NIGHT = 0.34;
-const BLOOM_THRESHOLD_DAY = 0.44;
-const BLOOM_THRESHOLD_NIGHT = 0.32;
-const BLOOM_SMOOTHING = 0.5;
 
-const ORB_SIZE_SUN = 10.8;
-const ORB_SIZE_SUN_GLOW = 23;
-const ORB_SIZE_SUN_CORONA = 34;
-const ORB_SIZE_MOON = 8.8;
-const ORB_SIZE_MOON_GLOW = 17;
+const ORB_SIZE_SUN = 12.2;
+const ORB_SIZE_SUN_HALO = 30;
+const ORB_SIZE_SUN_RAYS = 42;
+const ORB_SIZE_SUN_GLOW = ORB_SIZE_SUN_HALO;
+const ORB_SIZE_SUN_CORONA = ORB_SIZE_SUN_RAYS;
+const ORB_SIZE_MOON = 9.2;
+const ORB_SIZE_MOON_GLOW = 18.5;
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+function smoothstep(edge0, edge1, x) {
+  const t = clamp((x - edge0) / (edge1 - edge0), 0, 1);
+  return t * t * (3 - 2 * t);
+}
 
 function createOrbTexture(size = 256, softness = 0.2) {
   const data = new Uint8Array(size * size * 4);
@@ -70,6 +71,60 @@ function createOrbTexture(size = 256, softness = 0.2) {
   return texture;
 }
 
+function createSunRayTexture(size = 512, rayCount = 18) {
+  const data = new Uint8Array(size * size * 4);
+  const twoPi = Math.PI * 2;
+
+  for (let y = 0; y < size; y += 1) {
+    for (let x = 0; x < size; x += 1) {
+      const u = ((x + 0.5) / size) * 2 - 1;
+      const v = ((y + 0.5) / size) * 2 - 1;
+      const r = Math.sqrt(u * u + v * v);
+
+      let alpha = 0;
+      if (r <= 1) {
+        const angle = Math.atan2(v, u);
+        let rays = 0;
+
+        for (let i = 0; i < rayCount; i += 1) {
+          const target = (i / rayCount) * twoPi;
+          const directional = Math.max(0, Math.cos((angle - target) * 2.2));
+          rays = Math.max(rays, directional ** 8);
+        }
+
+        const centerFalloff = 1 - smoothstep(0, 1, r);
+        const rayFalloff = 1 - smoothstep(0.15, 1, r);
+        alpha = clamp(centerFalloff * 0.16 + rays * rayFalloff * 0.8, 0, 1);
+      }
+
+      const idx = (y * size + x) * 4;
+      data[idx] = 255;
+      data[idx + 1] = 255;
+      data[idx + 2] = 255;
+      data[idx + 3] = Math.round(alpha * 255);
+    }
+  }
+
+  const texture = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
+  texture.needsUpdate = true;
+  texture.magFilter = THREE.LinearFilter;
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.generateMipmaps = true;
+  return texture;
+}
+
+function configureSpriteTexture(texture, { sRGB = false } = {}) {
+  texture.wrapS = THREE.ClampToEdgeWrapping;
+  texture.wrapT = THREE.ClampToEdgeWrapping;
+  texture.magFilter = THREE.LinearFilter;
+  texture.minFilter = THREE.LinearFilter;
+  texture.generateMipmaps = false;
+  if ("colorSpace" in texture) {
+    texture.colorSpace = sRGB ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+  }
+  texture.needsUpdate = true;
+}
+
 function edgeFade(phase, edge = 0.12) {
   return clamp(Math.min(phase, 1 - phase) / edge, 0, 1);
 }
@@ -97,7 +152,6 @@ function isInFrontOfCamera(camera, position, forward, cameraToBody) {
 function SkyScene({ progressRef, sunIntensityRef }) {
   const skyRef = useRef(null);
   const starsRef = useRef(null);
-  const bloomRef = useRef(null);
   const sunCoreRef = useRef(null);
   const sunCoreMaterialRef = useRef(null);
   const sunGlowRef = useRef(null);
@@ -120,24 +174,86 @@ function SkyScene({ progressRef, sunIntensityRef }) {
   const tmpLightColor = useMemo(() => new THREE.Color(), []);
   const tmpForward = useMemo(() => new THREE.Vector3(), []);
   const tmpCameraToBody = useMemo(() => new THREE.Vector3(), []);
-  const sunCoreTexture = useMemo(() => createOrbTexture(256, 0.02), []);
-  const sunGlowTexture = useMemo(() => createOrbTexture(256, 0.55), []);
-  const sunCoronaTexture = useMemo(() => createOrbTexture(256, 0.75), []);
-  const moonCoreTexture = useMemo(() => createOrbTexture(256, 0.02), []);
-  const moonGlowTexture = useMemo(() => createOrbTexture(256, 0.7), []);
+  const sunCoreFallbackTexture = useMemo(() => createOrbTexture(512, 0.02), []);
+  const sunGlowTexture = useMemo(() => createOrbTexture(512, 0.62), []);
+  const sunRayTexture = useMemo(() => createSunRayTexture(512, 20), []);
+  const moonCoreFallbackTexture = useMemo(() => createOrbTexture(512, 0.02), []);
+  const moonGlowTexture = useMemo(() => createOrbTexture(512, 0.78), []);
+  const sunImageTextureRef = useRef(null);
+  const moonImageTextureRef = useRef(null);
+
+  useEffect(() => {
+    configureSpriteTexture(sunCoreFallbackTexture);
+    configureSpriteTexture(sunGlowTexture);
+    configureSpriteTexture(sunRayTexture);
+    configureSpriteTexture(moonCoreFallbackTexture);
+    configureSpriteTexture(moonGlowTexture);
+  }, [sunCoreFallbackTexture, sunGlowTexture, sunRayTexture, moonCoreFallbackTexture, moonGlowTexture]);
+
+  useEffect(() => {
+    const loader = new THREE.TextureLoader();
+    let active = true;
+
+    loader.load(
+      "/sun.webp",
+      (texture) => {
+        if (!active) {
+          texture.dispose();
+          return;
+        }
+        configureSpriteTexture(texture, { sRGB: true });
+        sunImageTextureRef.current = texture;
+        if (sunCoreMaterialRef.current) {
+          sunCoreMaterialRef.current.map = texture;
+          sunCoreMaterialRef.current.needsUpdate = true;
+        }
+      },
+      undefined,
+      () => {
+        // Fallback texture stays active if file fails to load.
+      },
+    );
+
+    loader.load(
+      "/moon.png",
+      (texture) => {
+        if (!active) {
+          texture.dispose();
+          return;
+        }
+        configureSpriteTexture(texture, { sRGB: true });
+        moonImageTextureRef.current = texture;
+        if (moonCoreMaterialRef.current) {
+          moonCoreMaterialRef.current.map = texture;
+          moonCoreMaterialRef.current.needsUpdate = true;
+        }
+      },
+      undefined,
+      () => {
+        // Fallback texture stays active if file fails to load.
+      },
+    );
+
+    return () => {
+      active = false;
+      sunImageTextureRef.current?.dispose();
+      moonImageTextureRef.current?.dispose();
+    };
+  }, []);
 
   useEffect(
     () => () => {
-      sunCoreTexture.dispose();
+      sunCoreFallbackTexture.dispose();
       sunGlowTexture.dispose();
-      sunCoronaTexture.dispose();
-      moonCoreTexture.dispose();
+      sunRayTexture.dispose();
+      moonCoreFallbackTexture.dispose();
       moonGlowTexture.dispose();
     },
-    [sunCoreTexture, sunGlowTexture, sunCoronaTexture, moonCoreTexture, moonGlowTexture],
+    [sunCoreFallbackTexture, sunGlowTexture, sunRayTexture, moonCoreFallbackTexture, moonGlowTexture],
   );
 
   useFrame((state) => {
+    const elapsed = state.clock.elapsedTime;
     const sunIntensity = sanitizeSunIntensity(sunIntensityRef.current);
     const sunIntensityMix =
       (sunIntensity - SUN_INTENSITY_MIN) / (SUN_INTENSITY_MAX - SUN_INTENSITY_MIN);
@@ -205,12 +321,13 @@ function SkyScene({ progressRef, sunIntensityRef }) {
 
     if (sunGlowRef.current && sunGlowMaterialRef.current) {
       const sunGlowOpacity = sunPass
-        ? clamp(haloFade * (0.12 + arcStrength * 0.2) * sunIntensity, 0, 1)
+        ? clamp(haloFade * (0.15 + arcStrength * 0.24) * sunIntensity, 0, 1)
         : 0;
+      const haloPulse = 1 + Math.sin(elapsed * 0.7) * 0.05;
       sunGlowRef.current.position.copy(sunBodyVector);
       sunGlowRef.current.scale.set(
-        (ORB_SIZE_SUN_GLOW + arcStrength * 8) * orbViewportScale,
-        (ORB_SIZE_SUN_GLOW + arcStrength * 8) * orbViewportScale,
+        (ORB_SIZE_SUN_GLOW + arcStrength * 8) * orbViewportScale * haloPulse,
+        (ORB_SIZE_SUN_GLOW + arcStrength * 8) * orbViewportScale * haloPulse,
         1,
       );
       sunGlowRef.current.visible = sunInView && sunGlowOpacity > 0.01;
@@ -220,17 +337,19 @@ function SkyScene({ progressRef, sunIntensityRef }) {
     }
 
     if (sunCoronaRef.current && sunCoronaMaterialRef.current) {
+      const rayPulse = 1 + Math.sin(elapsed * 0.92) * 0.06;
       const sunCoronaOpacity = sunPass
-        ? clamp(haloFade * (0.08 + arcStrength * 0.14) * sunIntensity, 0, 1)
+        ? clamp(haloFade * (0.1 + arcStrength * 0.17) * sunIntensity * rayPulse, 0, 1)
         : 0;
       sunCoronaRef.current.position.copy(sunBodyVector);
       sunCoronaRef.current.scale.set(
-        (ORB_SIZE_SUN_CORONA + arcStrength * 9) * orbViewportScale,
-        (ORB_SIZE_SUN_CORONA + arcStrength * 9) * orbViewportScale,
+        (ORB_SIZE_SUN_CORONA + arcStrength * 10) * orbViewportScale * rayPulse,
+        (ORB_SIZE_SUN_CORONA + arcStrength * 10) * orbViewportScale * rayPulse,
         1,
       );
       sunCoronaRef.current.visible = sunInView && sunCoronaOpacity > 0.01;
       sunCoronaMaterialRef.current.opacity = sunCoronaOpacity;
+      sunCoronaMaterialRef.current.rotation = elapsed * 0.055;
       tmpColor.setHSL(0.08, 1, 0.5);
       sunCoronaMaterialRef.current.color.copy(tmpColor);
     }
@@ -244,9 +363,14 @@ function SkyScene({ progressRef, sunIntensityRef }) {
     }
 
     if (moonGlowRef.current && moonGlowMaterialRef.current) {
-      const moonGlowOpacity = sunPass ? 0 : clamp(haloFade * 0.16, 0, 1);
+      const moonPulse = 1 + Math.sin(elapsed * 0.55) * 0.035;
+      const moonGlowOpacity = sunPass ? 0 : clamp(haloFade * 0.15 * moonPulse, 0, 1);
       moonGlowRef.current.position.copy(moonBodyVector);
-      moonGlowRef.current.scale.set(ORB_SIZE_MOON_GLOW * orbViewportScale, ORB_SIZE_MOON_GLOW * orbViewportScale, 1);
+      moonGlowRef.current.scale.set(
+        ORB_SIZE_MOON_GLOW * orbViewportScale * moonPulse,
+        ORB_SIZE_MOON_GLOW * orbViewportScale * moonPulse,
+        1,
+      );
       moonGlowRef.current.visible = moonInView && moonGlowOpacity > 0.01;
       moonGlowMaterialRef.current.opacity = moonGlowOpacity;
     }
@@ -258,13 +382,6 @@ function SkyScene({ progressRef, sunIntensityRef }) {
 
     if (typeof document !== "undefined") {
       document.documentElement.style.setProperty("--sky-daylight", String(daylight));
-    }
-
-    if (bloomRef.current) {
-      const dayBloom = BLOOM_INTENSITY_DAY * THREE.MathUtils.lerp(0.55, 1, sunIntensityMix);
-      bloomRef.current.intensity = THREE.MathUtils.lerp(BLOOM_INTENSITY_NIGHT, dayBloom, daylight);
-      bloomRef.current.luminanceThreshold = THREE.MathUtils.lerp(BLOOM_THRESHOLD_NIGHT, BLOOM_THRESHOLD_DAY, daylight);
-      bloomRef.current.luminanceSmoothing = BLOOM_SMOOTHING;
     }
 
     if (ambientRef.current) {
@@ -344,7 +461,7 @@ function SkyScene({ progressRef, sunIntensityRef }) {
       <sprite ref={sunCoronaRef} renderOrder={3}>
         <spriteMaterial
           ref={sunCoronaMaterialRef}
-          map={sunCoronaTexture}
+          map={sunRayTexture}
           color="#ff9a2a"
           transparent
           opacity={0.1}
@@ -358,8 +475,8 @@ function SkyScene({ progressRef, sunIntensityRef }) {
       <sprite ref={sunCoreRef} renderOrder={5}>
         <spriteMaterial
           ref={sunCoreMaterialRef}
-          map={sunCoreTexture}
-          color="#fffef8"
+          map={sunCoreFallbackTexture}
+          color="#ffffff"
           transparent
           opacity={0.9}
           alphaTest={0.01}
@@ -385,8 +502,8 @@ function SkyScene({ progressRef, sunIntensityRef }) {
       <sprite ref={moonCoreRef} renderOrder={5}>
         <spriteMaterial
           ref={moonCoreMaterialRef}
-          map={moonCoreTexture}
-          color="#f8fbff"
+          map={moonCoreFallbackTexture}
+          color="#ffffff"
           transparent
           opacity={0.85}
           alphaTest={0.01}
@@ -395,20 +512,11 @@ function SkyScene({ progressRef, sunIntensityRef }) {
         />
       </sprite>
 
-      <EffectComposer disableNormalPass>
-        <Bloom
-          ref={bloomRef}
-          intensity={BLOOM_INTENSITY_DAY}
-          luminanceThreshold={BLOOM_THRESHOLD_DAY}
-          luminanceSmoothing={BLOOM_SMOOTHING}
-          mipmapBlur
-        />
-      </EffectComposer>
     </>
   );
 }
 
-export default function SunMoonCycle() {
+export default function SunMoonCycle({ layerClass = "z-0" }) {
   const [reducedMotion, setReducedMotion] = useState(false);
   const progressRef = useRef(0);
   const sunIntensityRef = useRef(SUN_INTENSITY_DEFAULT);
@@ -478,12 +586,14 @@ export default function SunMoonCycle() {
 
   if (reducedMotion) {
     return (
-      <div className="fixed inset-0 w-full h-full pointer-events-none z-0 bg-gradient-to-b from-[#462104] via-[#c96e12] to-[#f8d44d]" />
+      <div
+        className={`fixed inset-0 h-full w-full pointer-events-none ${layerClass} bg-gradient-to-b from-[#462104] via-[#c96e12] to-[#f8d44d]`}
+      />
     );
   }
 
   return (
-    <div className="fixed inset-0 w-full h-full pointer-events-none z-0">
+    <div className={`fixed inset-0 h-full w-full pointer-events-none ${layerClass}`}>
       <Canvas
         dpr={[1, 1.7]}
         camera={{ position: [0, 0, 1], fov: 55, near: 0.1, far: SKY_RADIUS + 1000 }}

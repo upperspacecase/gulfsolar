@@ -11,10 +11,13 @@ import settings from "../data/calculator-settings.json";
 
 export default function Home() {
   return (
-    <main className="min-h-screen relative isolate">
-      {/* Fixed background with sun/moon cycle */}
-      <SunMoonCycle />
-      
+    <main className="relative min-h-screen">
+      <SunMoonCycle layerClass="-z-20" />
+      <div
+        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url('/background%20image.png')" }}
+      />
+
       {/* Content overlay */}
       <div className="relative z-10">
         {/* Hero Section */}

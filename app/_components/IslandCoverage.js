@@ -3,7 +3,6 @@
 import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
-import GulfMapBackground from "./GulfMapBackground";
 
 const islands = [
   "Waiheke Island",
@@ -69,11 +68,6 @@ export default function IslandCoverage() {
       id="coverage"
       className="relative overflow-hidden py-20 md:py-32"
     >
-      <div className="absolute inset-0">
-        <GulfMapBackground />
-        <div className="absolute inset-0 bg-navy/70" />
-      </div>
-
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid gap-6 md:grid-cols-3 mb-16">
           {[
