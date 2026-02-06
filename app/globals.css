@@ -2,10 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --brand-navy: #1d2653;
+  --brand-gold: #ffc343;
+  --brand-offwhite: #f4f4f6;
+  --brand-lightgray: #d1d5d9;
+  --sky-daylight: 0.5;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  @apply bg-slate-900 text-slate-900 overflow-hidden;
+  background: #09122b;
+  color: #f4f4f6;
+  overflow-x: hidden;
+}
+
+.section-shell {
+  background: rgba(8, 20, 47, calc(0.2 + var(--sky-daylight) * 0.2));
+  border: 1px solid rgba(255, 255, 255, calc(0.16 + var(--sky-daylight) * 0.2));
+  backdrop-filter: blur(14px);
+}
+
+.section-heading {
+  color: #ffffff;
+  text-shadow: 0 1px 22px rgba(0, 0, 0, 0.45);
+}
+
+.section-copy {
+  color: rgba(244, 244, 246, 0.88);
 }
