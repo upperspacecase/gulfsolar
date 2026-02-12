@@ -29,6 +29,16 @@ const ORB_SIZE_SUN_CORONA = ORB_SIZE_SUN_RAYS;
 const ORB_SIZE_MOON = 9.2;
 const ORB_SIZE_MOON_GLOW = 18.5;
 
+const BACKGROUND_IMAGE_WIDTH = 1920;
+const BACKGROUND_IMAGE_HEIGHT = 1080;
+const BACKGROUND_IMAGE_ALPHA_TOP_RATIO = 0.6213;
+const BACKGROUND_IMAGE_ALPHA_SOLID_RATIO = 0.7074;
+const BACKGROUND_IMAGE_HORIZON_RATIO =
+  BACKGROUND_IMAGE_ALPHA_TOP_RATIO +
+  (BACKGROUND_IMAGE_ALPHA_SOLID_RATIO - BACKGROUND_IMAGE_ALPHA_TOP_RATIO) * 0.45;
+const HORIZON_FADE_BELOW_NDC = 0.08;
+const HORIZON_FADE_ABOVE_NDC = 0.12;
+
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
 function smoothstep(edge0, edge1, x) {
@@ -149,6 +159,20 @@ function isInFrontOfCamera(camera, position, forward, cameraToBody) {
   return cameraToBody.dot(forward) > 0;
 }
 
+function backgroundHorizonNdc(viewportWidth, viewportHeight) {
+  if (viewportWidth <= 0 || viewportHeight <= 0) return -0.25;
+
+  const scale = Math.max(
+    viewportWidth / BACKGROUND_IMAGE_WIDTH,
+    viewportHeight / BACKGROUND_IMAGE_HEIGHT,
+  );
+  const renderedHeight = BACKGROUND_IMAGE_HEIGHT * scale;
+  const offsetY = (viewportHeight - renderedHeight) * 0.5;
+  const horizonY = offsetY + renderedHeight * BACKGROUND_IMAGE_HORIZON_RATIO;
+  const horizonViewportRatio = clamp(horizonY / viewportHeight, 0, 1);
+  return 1 - horizonViewportRatio * 2;
+}
+
 function SkyScene({ progressRef, sunIntensityRef }) {
   const skyRef = useRef(null);
   const starsRef = useRef(null);
@@ -174,6 +198,7 @@ function SkyScene({ progressRef, sunIntensityRef }) {
   const tmpLightColor = useMemo(() => new THREE.Color(), []);
   const tmpForward = useMemo(() => new THREE.Vector3(), []);
   const tmpCameraToBody = useMemo(() => new THREE.Vector3(), []);
+  const sunScreenVector = useMemo(() => new THREE.Vector3(), []);
   const sunCoreFallbackTexture = useMemo(() => createOrbTexture(512, 0.02), []);
   const sunGlowTexture = useMemo(() => createOrbTexture(512, 0.62), []);
   const sunRayTexture = useMemo(() => createSunRayTexture(512, 20), []);
@@ -265,14 +290,26 @@ function SkyScene({ progressRef, sunIntensityRef }) {
     const arcStrength = 4 * phase * (1 - phase);
     const mainFade = edgeFade(phase, 0.1);
     const haloFade = edgeFade(phase, 0.16);
-    const daylightBase = sunPass ? clamp(0.16 + arcStrength * 0.84, 0, 1) : 0.05;
+    const horizonNdc = backgroundHorizonNdc(state.size.width, state.size.height);
+
+    arcPointForBody(phase, state.camera, sunBodyVector);
+    arcPointForBody(phase, state.camera, moonBodyVector);
+
+    const sunScreenY = sunScreenVector.copy(sunBodyVector).project(state.camera).y;
+    const horizonFade = sunPass
+      ? smoothstep(
+          horizonNdc - HORIZON_FADE_BELOW_NDC,
+          horizonNdc + HORIZON_FADE_ABOVE_NDC,
+          sunScreenY,
+        )
+      : 0;
+    const daylightBase = sunPass
+      ? clamp((0.16 + arcStrength * 0.84) * THREE.MathUtils.lerp(0.24, 1, horizonFade), 0, 1)
+      : 0.05;
     const daylight = sunPass
       ? clamp(daylightBase * THREE.MathUtils.lerp(0.62, 1.05, sunIntensityMix), 0, 1)
       : daylightBase;
     const orbViewportScale = clamp(state.size.width / 1400, 0.82, 1.18);
-
-    arcPointForBody(phase, state.camera, sunBodyVector);
-    arcPointForBody(phase, state.camera, moonBodyVector);
 
     const sunInView = isInFrontOfCamera(
       state.camera,
@@ -311,7 +348,7 @@ function SkyScene({ progressRef, sunIntensityRef }) {
 
     if (sunCoreRef.current && sunCoreMaterialRef.current) {
       const sunOpacity = sunPass
-        ? clamp(mainFade * (0.88 + arcStrength * 0.12) * sunIntensity, 0, 1)
+        ? clamp(mainFade * horizonFade * (0.88 + arcStrength * 0.12) * sunIntensity, 0, 1)
         : 0;
       sunCoreRef.current.position.copy(sunBodyVector);
       sunCoreRef.current.scale.set(ORB_SIZE_SUN * orbViewportScale, ORB_SIZE_SUN * orbViewportScale, 1);
@@ -321,7 +358,7 @@ function SkyScene({ progressRef, sunIntensityRef }) {
 
     if (sunGlowRef.current && sunGlowMaterialRef.current) {
       const sunGlowOpacity = sunPass
-        ? clamp(haloFade * (0.15 + arcStrength * 0.24) * sunIntensity, 0, 1)
+        ? clamp(haloFade * horizonFade * (0.15 + arcStrength * 0.24) * sunIntensity, 0, 1)
         : 0;
       const haloPulse = 1 + Math.sin(elapsed * 0.7) * 0.05;
       sunGlowRef.current.position.copy(sunBodyVector);
@@ -339,7 +376,7 @@ function SkyScene({ progressRef, sunIntensityRef }) {
     if (sunCoronaRef.current && sunCoronaMaterialRef.current) {
       const rayPulse = 1 + Math.sin(elapsed * 0.92) * 0.06;
       const sunCoronaOpacity = sunPass
-        ? clamp(haloFade * (0.1 + arcStrength * 0.17) * sunIntensity * rayPulse, 0, 1)
+        ? clamp(haloFade * horizonFade * (0.1 + arcStrength * 0.17) * sunIntensity * rayPulse, 0, 1)
         : 0;
       sunCoronaRef.current.position.copy(sunBodyVector);
       sunCoronaRef.current.scale.set(
@@ -401,7 +438,7 @@ function SkyScene({ progressRef, sunIntensityRef }) {
     if (sunLightRef.current) {
       sunLightRef.current.position.copy(sunBodyVector);
       sunLightRef.current.intensity = sunPass
-        ? THREE.MathUtils.lerp(0.2, 1.32, arcStrength) * sunIntensity
+        ? THREE.MathUtils.lerp(0.2, 1.32, arcStrength) * sunIntensity * horizonFade
         : 0.02;
       tmpLightColor.setHSL(0.11, 1, 0.72);
       sunLightRef.current.color.copy(tmpLightColor);
