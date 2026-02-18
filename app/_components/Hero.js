@@ -1,212 +1,162 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import {
-  SUN_INTENSITY_DEFAULT,
-  SUN_INTENSITY_EVENT,
-  SUN_INTENSITY_MAX,
-  SUN_INTENSITY_MIN,
-  SUN_INTENSITY_STORAGE_KEY,
-  sanitizeSunIntensity,
-} from "./sunControls";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
   { label: "Services", href: "#services" },
-  { label: "Estimator", href: "#estimate" },
-  { label: "Coverage", href: "#coverage" },
+  { label: "About", href: "#about" },
+  { label: "Testimonials", href: "#testimonials" },
+  { label: "Estimate", href: "#estimate" },
   { label: "Contact", href: "#contact" },
 ];
 
-const heroMedia = {
-  main: "/Statics/DSC00174.JPG",
-  secondary: "/Statics/DSC00207.JPG",
-};
-
 export default function Hero() {
-  const containerRef = useRef(null);
-  const [sunIntensity, setSunIntensity] = useState(() => {
-    if (typeof window === "undefined") return SUN_INTENSITY_DEFAULT;
-    const saved = window.localStorage.getItem(SUN_INTENSITY_STORAGE_KEY);
-    return sanitizeSunIntensity(saved ?? SUN_INTENSITY_DEFAULT);
-  });
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
-
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.45], [1, 0.2]);
-  const contentY = useTransform(scrollYProgress, [0, 0.45], [0, -90]);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    window.localStorage.setItem(SUN_INTENSITY_STORAGE_KEY, String(sunIntensity));
-    window.dispatchEvent(
-      new CustomEvent(SUN_INTENSITY_EVENT, { detail: { value: sunIntensity } }),
-    );
-  }, [sunIntensity]);
-
-  const handleSunIntensityChange = (event) => {
-    const nextValue = sanitizeSunIntensity(event.target.value);
-    setSunIntensity(nextValue);
-
-    if (typeof window === "undefined") return;
-    window.localStorage.setItem(SUN_INTENSITY_STORAGE_KEY, String(nextValue));
-    window.dispatchEvent(
-      new CustomEvent(SUN_INTENSITY_EVENT, { detail: { value: nextValue } }),
-    );
-  };
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <section ref={containerRef} className="relative min-h-screen w-full pb-20 pt-32 md:pt-36">
-      <div className="fixed left-1/2 top-4 z-40 w-[calc(100%-1.5rem)] max-w-7xl -translate-x-1/2">
-        <div className="section-shell flex items-center justify-between rounded-2xl px-4 py-3 md:px-6 md:py-4">
-          <a href="#" className="flex items-center">
+    <>
+      {/* ── Navbar ── */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-cream/95 backdrop-blur-sm border-b border-stone/10">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-20">
+          <a href="#" className="flex items-center flex-shrink-0">
             <Image
               src="/Add a heading.png"
               alt="Gulf Solar"
               width={220}
               height={46}
-              className="h-7 w-auto md:h-8"
+              className="h-9 w-auto"
               priority
             />
           </a>
 
-          <nav className="hidden items-center gap-6 md:flex">
+          {/* Desktop nav */}
+          <nav className="hidden lg:flex items-center gap-8">
             {navLinks.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
-                className="text-sm font-medium text-white/85 transition-colors hover:text-gold"
+                className="text-sm font-medium text-stone-muted transition-colors hover:text-stone"
               >
                 {item.label}
               </a>
             ))}
           </nav>
 
-          <div className="hidden items-center gap-3 rounded-lg border border-white/20 bg-black/25 px-3 py-2 lg:flex">
-            <label
-              htmlFor="sun-brightness"
-              className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/80"
-            >
-              Sun
-            </label>
-            <input
-              id="sun-brightness"
-              type="range"
-              min={SUN_INTENSITY_MIN}
-              max={SUN_INTENSITY_MAX}
-              step="0.01"
-              value={sunIntensity}
-              onChange={handleSunIntensityChange}
-              className="h-1 w-28 cursor-pointer accent-gold"
-              aria-label="Sun brightness"
-            />
-            <span className="w-10 text-right text-xs font-semibold text-white/85">
-              {Math.round(sunIntensity * 100)}%
-            </span>
-          </div>
-
-          <a
-            href="#estimate"
-            className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-navy transition-colors hover:bg-gold-light"
-          >
-            Free Assessment
-          </a>
-        </div>
-      </div>
-
-      <motion.div
-        className="relative z-10 mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:px-8"
-        style={{ opacity: contentOpacity, y: contentY }}
-      >
-        <div>
-          <p className="mb-5 text-xs font-semibold uppercase tracking-[0.24em] text-gold">
-            Enterprise Solar For Coastal Conditions
-          </p>
-          <h1 className="section-heading text-4xl font-bold leading-[1.05] md:text-6xl xl:text-7xl">
-            Energy Infrastructure
-            <br />
-            <span className="text-gold">Engineered for Island Life.</span>
-          </h1>
-          <p className="section-copy mt-7 max-w-2xl text-lg md:text-xl">
-            We design and install high-performance solar systems for homes, lodges,
-            farms, and island businesses across the Hauraki Gulf.
-          </p>
-
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+          <div className="flex items-center gap-4">
             <a
-              href="#estimate"
-              className="rounded-lg bg-gold px-8 py-4 text-center font-semibold text-navy shadow-lg transition-colors hover:bg-gold-light"
+              href="tel:+6421123456"
+              className="hidden md:inline-flex items-center gap-2 text-sm font-medium text-stone hover:text-terracotta transition-colors"
             >
-              Start Your Project
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              0800 SOLAR
             </a>
             <a
-              href="#services"
-              className="section-shell rounded-lg px-8 py-4 text-center font-semibold text-white transition-colors hover:text-gold"
+              href="#contact"
+              className="hidden sm:inline-block rounded-full border border-stone px-6 py-2.5 text-sm font-medium text-stone transition-all hover:bg-stone hover:text-cream"
             >
-              Explore Solutions
+              Get in Touch
             </a>
+
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="flex flex-col items-center justify-center gap-1.5 lg:hidden p-2"
+              aria-label="Toggle mobile menu"
+            >
+              <span className={`block h-0.5 w-6 bg-stone transition-all duration-300 ${mobileOpen ? "translate-y-2 rotate-45" : ""}`} />
+              <span className={`block h-0.5 w-6 bg-stone transition-all duration-300 ${mobileOpen ? "opacity-0" : ""}`} />
+              <span className={`block h-0.5 w-6 bg-stone transition-all duration-300 ${mobileOpen ? "-translate-y-2 -rotate-45" : ""}`} />
+            </button>
           </div>
         </div>
 
-        <div className="section-shell rounded-3xl p-6 md:p-8">
-          <div className="relative overflow-hidden rounded-2xl border border-white/20">
-            <Image
-              src={heroMedia.main}
-              alt="Close-up of premium solar panel surface"
-              width={6000}
-              height={3376}
-              className="h-52 w-full object-cover"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-            <p className="absolute bottom-4 left-4 text-xs font-semibold uppercase tracking-[0.2em] text-white/90">
-              Field Quality • Real Install
-            </p>
-          </div>
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="lg:hidden border-t border-stone/10 bg-cream overflow-hidden"
+            >
+              <nav className="flex flex-col px-6 py-6 gap-4">
+                {navLinks.map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="text-lg font-medium text-stone/80 hover:text-terracotta transition-colors"
+                  >
+                    {item.label}
+                  </a>
+                ))}
+                <a
+                  href="#contact"
+                  onClick={() => setMobileOpen(false)}
+                  className="mt-2 rounded-full border border-stone px-6 py-3 text-center font-medium text-stone hover:bg-stone hover:text-cream transition-colors"
+                >
+                  Get in Touch
+                </a>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </header>
 
-          <p className="mt-6 text-xs font-semibold uppercase tracking-[0.22em] text-gold">Why Gulf Solar</p>
-          <h2 className="section-heading mt-4 text-2xl font-bold md:text-3xl">
-            Strategic, resilient systems
-          </h2>
-          <p className="section-copy mt-4 text-base">
-            Built for salt spray, high winds, transport constraints, and long-term reliability.
-          </p>
+      {/* ── Hero Section ── */}
+      <section className="relative pt-20">
+        <div className="relative min-h-[600px] md:min-h-[700px] overflow-hidden">
+          <Image
+            src="/hero-aerial-gulf.png"
+            alt="Aerial view of Waiheke Island and the Hauraki Gulf"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-stone/70 via-stone/30 to-transparent" />
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
-            {[
-              ["12+", "Islands Served"],
-              ["8", "Years Gulf Experience"],
-              ["24h", "Initial Response"],
-              ["75%", "Typical Bill Reduction"],
-            ].map(([value, label]) => (
-              <div key={label} className="rounded-xl border border-white/20 bg-white/8 p-4">
-                <p className="text-3xl font-bold text-white">{value}</p>
-                <p className="mt-1 text-sm text-white/75">{label}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 rounded-xl border border-gold/40 bg-gold/12 p-4">
-            <p className="text-sm text-white/90">
-              &ldquo;One project lead. One logistics plan. One performance target.&rdquo;
-            </p>
-          </div>
-
-          <div className="relative mt-6 overflow-hidden rounded-xl border border-white/20">
-            <Image
-              src={heroMedia.secondary}
-              alt="Installer positioning rail system on a roof"
-              width={6000}
-              height={3376}
-              className="h-28 w-full object-cover object-[center_42%]"
-            />
-            <div className="absolute inset-0 bg-navy/25" />
+          <div className="absolute inset-0 flex items-end pb-20 md:pb-28">
+            <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="max-w-2xl"
+              >
+                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-cream/70 mb-5">
+                  Hauraki Gulf Solar Specialists
+                </p>
+                <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-cream leading-[1.15] mb-6">
+                  Solar energy for island life.
+                </h1>
+                <p className="text-cream/80 text-lg md:text-xl leading-relaxed mb-10 max-w-lg">
+                  Premium solar installations for homes and businesses across
+                  Waiheke Island, Great Barrier, and the Hauraki Gulf.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <a
+                    href="#contact"
+                    className="rounded-full bg-terracotta px-8 py-4 text-center font-medium text-cream transition-all hover:bg-terracotta-dark text-lg"
+                  >
+                    Get in Touch
+                  </a>
+                  <a
+                    href="tel:+6421123456"
+                    className="rounded-full border border-cream/40 px-8 py-4 text-center font-medium text-cream transition-colors hover:bg-cream/10"
+                  >
+                    Call 0800 SOLAR
+                  </a>
+                </div>
+              </motion.div>
+            </div>
           </div>
         </div>
-      </motion.div>
-    </section>
+      </section>
+    </>
   );
 }

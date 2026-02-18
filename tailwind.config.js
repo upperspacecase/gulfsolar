@@ -6,25 +6,39 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        serif: ['Libre Baskerville', 'Georgia', 'Times New Roman', 'serif'],
+      },
       colors: {
-        navy: {
-          DEFAULT: "#1D2653",
-          light: "#2A3570",
-          dark: "#151B3D",
+        cream: "#F7F7F2",
+        stone: {
+          DEFAULT: "#1A1A1A",
+          light: "#3A3A3A",
+          muted: "#6B6B6B",
         },
-        gold: {
-          DEFAULT: "#FFC343",
-          light: "#FFD166",
-          dark: "#E5A832",
+        terracotta: {
+          DEFAULT: "#C75B3F",
+          light: "#D4705A",
+          dark: "#A44A32",
         },
-        offwhite: "#F4F4F6",
-        lightgray: "#D1D5D9",
-      },
-      boxShadow: {
-        soft: "0 20px 60px rgba(29, 38, 83, 0.12)",
-      },
-      borderRadius: {
-        xl2: "1.5rem",
+        // Keep legacy tokens for backward compat
+        charcoal: {
+          DEFAULT: "#1A1A1A",
+          light: "#252525",
+          dark: "#111111",
+        },
+        orange: {
+          DEFAULT: "#C75B3F",
+          light: "#D4705A",
+          dark: "#A44A32",
+        },
+        amber: {
+          DEFAULT: "#D4A574",
+          light: "#E2BB8E",
+          dark: "#B88A5E",
+        },
+        offwhite: "#F7F7F2",
       },
     },
   },
@@ -33,16 +47,16 @@ module.exports = {
     themes: [
       {
         gulf: {
-          primary: "#1D2653",
-          secondary: "#FFC343",
-          accent: "#FFC343",
-          neutral: "#1D2653",
-          "base-100": "#F4F4F6",
+          primary: "#C75B3F",
+          secondary: "#D4A574",
+          accent: "#D4705A",
+          neutral: "#1A1A1A",
+          "base-100": "#F7F7F2",
           "base-200": "#FFFFFF",
-          "base-300": "#D1D5D9",
+          "base-300": "#E5E5E0",
           info: "#3B82F6",
           success: "#16A34A",
-          warning: "#FFC343",
+          warning: "#D4A574",
           error: "#EF4444",
         },
       },

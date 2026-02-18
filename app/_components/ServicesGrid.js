@@ -1,170 +1,211 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
-const services = [
+const steps = [
   {
-    number: "01",
-    title: "Residential Solar",
-    description: "Custom solar installations for island homes, designed to withstand salt air, high winds, and maximize energy production in challenging coastal environments.",
-    features: ["Grid-tied & off-grid systems", "Battery storage solutions", "Roof & ground mount options"],
-    image: "/Statics/DSC00171.JPG",
+    step: "01",
+    title: "Free Consultation",
+    desc: "We assess your property, energy usage, and goals — remotely or on-site.",
   },
   {
-    number: "02",
-    title: "Commercial Systems",
-    description: "Scalable solar solutions for island businesses, from small cafes to larger operations. Reduce overheads and demonstrate environmental commitment.",
-    features: ["Commercial-scale installations", "Power monitoring systems", "Maintenance packages"],
-    image: "/Statics/DSC00195.JPG",
+    step: "02",
+    title: "Custom Design",
+    desc: "Our engineers design a system optimised for your roof, budget, and island conditions.",
   },
   {
-    number: "03",
-    title: "Remote Island Specialists",
-    description: "We come to you — no matter which Hauraki Gulf island you call home. Our team has the experience and equipment to handle installations anywhere.",
-    features: ["Boat & barge transport", "All island locations covered", "Remote monitoring support"],
-    highlighted: true,
-    image: "/Statics/DSC00202.JPG",
+    step: "03",
+    title: "Professional Install",
+    desc: "We handle all logistics — permits, transport, and a clean 1–2 day installation.",
+  },
+  {
+    step: "04",
+    title: "Ongoing Support",
+    desc: "Remote monitoring, maintenance packages, and a 10-year workmanship warranty.",
   },
 ];
 
 export default function ServicesGrid() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    island: "",
+    message: "",
+  });
+  const [status, setStatus] = useState("");
 
-  const containerVariants = {
-    hidden: {},
-    visible: {
-      transition: {
-        staggerChildren: 0.15,
-      },
-    },
+  const handleChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.7,
-        ease: [0.25, 0.1, 0.25, 1],
-      },
-    },
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setStatus("Thanks! We'll be in touch shortly.");
+    setFormData({ name: "", email: "", phone: "", island: "", message: "" });
   };
 
   return (
-    <section 
-      ref={ref}
-      id="services" 
-      className="py-20 md:py-32"
-    >
+    <section ref={ref} id="services" className="bg-cream py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        {/* Section header */}
-        <motion.div 
-          className="mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
-          <p className="text-gold font-semibold uppercase tracking-widest text-sm mb-4">
-            What We Do
-          </p>
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white max-w-3xl">
-            Solar solutions built for the unique challenges of island living
-          </h2>
-        </motion.div>
+        {/* Quote Form */}
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+          {/* Left — Copy */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.7 }}
+          >
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-muted mb-4">
+              Get a Quote
+            </p>
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-stone leading-tight mb-6">
+              Start your solar journey today.
+            </h2>
+            <p className="text-stone-muted text-lg leading-relaxed mb-10 max-w-md">
+              Tell us a bit about your property and we&apos;ll get back to you
+              with a free, no-obligation assessment tailored for island
+              conditions.
+            </p>
 
-        {/* Services grid */}
-        <motion.div 
-          className="grid lg:grid-cols-3 gap-8"
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-        >
-          {services.map((service) => (
-            <motion.div
-              key={service.number}
-              variants={itemVariants}
-              whileHover={{ y: -8, transition: { duration: 0.3 } }}
-              className={`group relative p-8 rounded-2xl transition-shadow duration-300 cursor-pointer ${
-                service.highlighted 
-                  ? "bg-black/42 backdrop-blur-md text-white shadow-lg border border-white/25" 
-                  : "bg-white/14 backdrop-blur-md text-white shadow-lg border border-white/20 hover:bg-white/20"
-              }`}
+            <div className="space-y-4 border-t border-stone/10 pt-8">
+              <div className="flex items-center gap-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-terracotta flex-shrink-0" />
+                <span className="text-stone-muted">Free site assessment</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-terracotta flex-shrink-0" />
+                <span className="text-stone-muted">Custom system design</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-terracotta flex-shrink-0" />
+                <span className="text-stone-muted">Response within 24 hours</span>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Right — Form */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.15 }}
+          >
+            <form
+              onSubmit={handleSubmit}
+              className="border border-stone/15 bg-white p-8 md:p-10 space-y-5"
             >
-              <div className="relative mb-6 overflow-hidden rounded-xl border border-white/20">
-                <Image
-                  src={service.image}
-                  alt={service.title}
-                  width={6000}
-                  height={3376}
-                  className="h-36 w-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-stone mb-1.5">Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Your name"
+                    className="w-full px-4 py-3 bg-cream border border-stone/15 text-sm text-stone placeholder:text-stone/30 focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-stone mb-1.5">Phone</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder="021 123 4567"
+                    className="w-full px-4 py-3 bg-cream border border-stone/15 text-sm text-stone placeholder:text-stone/30 focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all"
+                  />
+                </div>
               </div>
 
-              {/* Number */}
-              <motion.div 
-                className={`text-6xl font-bold mb-6 ${
-                  service.highlighted ? "text-gold" : "text-white/35"
-                }`}
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 0.5, delay: 0.2 }}
-              >
-                {service.number}
-              </motion.div>
+              <div>
+                <label className="block text-sm font-medium text-stone mb-1.5">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="you@email.com"
+                  className="w-full px-4 py-3 bg-cream border border-stone/15 text-sm text-stone placeholder:text-stone/30 focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all"
+                />
+              </div>
 
-              {/* Content */}
-              <h3 className={`text-2xl font-bold mb-4 ${
-                service.highlighted ? "text-white" : "text-white"
-              }`}>
-                {service.title}
-              </h3>
-              
-              <p className={`mb-6 ${
-                service.highlighted ? "text-white/80" : "text-white/80"
-              }`}>
-                {service.description}
-              </p>
-
-              {/* Features list */}
-              <ul className="space-y-2">
-                {service.features.map((feature, i) => (
-                  <motion.li 
-                    key={i}
-                    className={`flex items-center gap-2 text-sm ${
-                      service.highlighted ? "text-white/70" : "text-white/75"
-                    }`}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={isInView ? { opacity: 1, x: 0 } : {}}
-                    transition={{ delay: 0.3 + i * 0.1 }}
-                  >
-                    <span className={`w-1.5 h-1.5 rounded-full ${
-                      service.highlighted ? "bg-gold" : "bg-gold/80"
-                    }`} />
-                    {feature}
-                  </motion.li>
-                ))}
-              </ul>
-
-              {/* Highlighted badge */}
-              {service.highlighted && (
-                <motion.div 
-                  className="absolute top-4 right-4"
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                  transition={{ delay: 0.5, type: "spring" }}
+              <div>
+                <label className="block text-sm font-medium text-stone mb-1.5">Which island?</label>
+                <select
+                  name="island"
+                  value={formData.island}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 bg-cream border border-stone/15 text-sm text-stone focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all appearance-none cursor-pointer"
                 >
-                  <span className="px-3 py-1 bg-gold text-navy text-xs font-semibold rounded-full">
-                    Our Specialty
-                  </span>
-                </motion.div>
+                  <option value="">Select an island</option>
+                  <option value="waiheke">Waiheke Island</option>
+                  <option value="great-barrier">Great Barrier Island</option>
+                  <option value="rakino">Rakino Island</option>
+                  <option value="rotoroa">Rotoroa Island</option>
+                  <option value="ponui">Ponui Island</option>
+                  <option value="kawau">Kawau Island</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone mb-1.5">Tell us about your project</label>
+                <textarea
+                  name="message"
+                  rows={3}
+                  value={formData.message}
+                  onChange={handleChange}
+                  placeholder="What are your solar goals?"
+                  className="w-full px-4 py-3 bg-cream border border-stone/15 text-sm text-stone placeholder:text-stone/30 focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all resize-none"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-4 bg-terracotta hover:bg-terracotta-dark text-cream font-medium rounded-full transition-colors duration-200 text-lg"
+              >
+                Request a Free Quote
+              </button>
+
+              {status && (
+                <p className="text-sm text-center text-stone font-medium" aria-live="polite">
+                  {status}
+                </p>
               )}
-            </motion.div>
-          ))}
+            </form>
+          </motion.div>
+        </div>
+
+        {/* How We Work — numbered process steps */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.4 }}
+          className="mt-20 md:mt-28"
+        >
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-muted mb-4">
+            How We Work
+          </p>
+          <h3 className="font-serif text-3xl md:text-4xl text-stone mb-12 max-w-lg leading-tight">
+            From first call to first kilowatt
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-stone/15">
+            {steps.map((item) => (
+              <div key={item.step} className="p-8 bg-cream">
+                <p className="font-serif text-3xl text-terracotta mb-4">{item.step}</p>
+                <h4 className="font-serif text-lg text-stone mb-2">{item.title}</h4>
+                <p className="text-sm text-stone-muted leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
         </motion.div>
       </div>
     </section>

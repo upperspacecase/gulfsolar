@@ -1,87 +1,65 @@
-import SunMoonCycle from "./_components/SunMoonCycle";
 import Hero from "./_components/Hero";
-import StatsSection from "./_components/StatsSection";
 import ServicesGrid from "./_components/ServicesGrid";
 import Calculator from "./_components/Calculator";
+import AboutSection from "./_components/AboutSection";
 import TestimonialsSection from "./_components/TestimonialsSection";
-import IslandCoverage from "./_components/IslandCoverage";
 import ContactSection from "./_components/ContactSection";
 import Footer from "./_components/Footer";
 import settings from "../data/calculator-settings.json";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen">
-      <SunMoonCycle layerClass="-z-20" />
-      <div
-        className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/background%20image.png')" }}
-      />
+    <main>
+      <Hero />
 
-      {/* Content overlay */}
-      <div className="relative z-10">
-        {/* Hero Section */}
-        <Hero />
+      <ServicesGrid />
 
-        {/* Stats Section - transparent background to show sky */}
-        <StatsSection />
+      <AboutSection />
 
-        {/* Services Section */}
-        <ServicesGrid />
+      <TestimonialsSection />
 
-        {/* Solar Estimator Section */}
-        <section id="estimate" className="py-20 md:py-32">
-          <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              {/* Left - Text */}
-              <div className="text-white bg-black/28 backdrop-blur-md rounded-2xl border border-white/20 p-8">
-                <p className="text-gold font-semibold uppercase tracking-widest text-sm mb-4">
-                  Solar Estimator
-                </p>
-                <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
-                  Get Your Personalized Solar Estimate
-                </h2>
-                <p className="text-lg text-white/80 mb-8">
-                  Enter your current power bill and a few details about your home. 
-                  We&apos;ll calculate your potential savings, system size, and payback period 
-                  — all tailored for island conditions.
-                </p>
-                <ul className="space-y-4">
-                  <li className="flex items-center gap-3">
-                    <span className="w-6 h-6 bg-gold rounded-full flex items-center justify-center text-navy text-sm font-bold">✓</span>
-                    <span className="text-white/80">Takes less than 60 seconds</span>
+      {/* Solar Estimator */}
+      <section id="estimate" className="bg-cream py-20 md:py-28">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left - Text */}
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-stone-muted mb-4">
+                Solar Estimator
+              </p>
+              <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl text-stone leading-tight mb-6">
+                See what solar could save you
+              </h2>
+              <p className="text-lg text-stone-muted leading-relaxed mb-10">
+                Enter your current power bill and we&apos;ll calculate your
+                potential savings, system size, and payback period — tailored
+                for island conditions.
+              </p>
+              <ul className="space-y-4">
+                {[
+                  "Takes less than 60 seconds",
+                  "Based on real Gulf island data",
+                  "No pressure, just information",
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-3">
+                    <span className="w-1.5 h-1.5 rounded-full bg-terracotta flex-shrink-0" />
+                    <span className="text-stone-muted">{item}</span>
                   </li>
-                  <li className="flex items-center gap-3">
-                    <span className="w-6 h-6 bg-gold rounded-full flex items-center justify-center text-navy text-sm font-bold">✓</span>
-                    <span className="text-white/80">Based on real Gulf island data</span>
-                  </li>
-                  <li className="flex items-center gap-3">
-                    <span className="w-6 h-6 bg-gold rounded-full flex items-center justify-center text-navy text-sm font-bold">✓</span>
-                    <span className="text-white/80">No pressure, just information</span>
-                  </li>
-                </ul>
-              </div>
+                ))}
+              </ul>
+            </div>
 
-              {/* Right - Calculator */}
-              <div className="lg:pl-8">
-                <Calculator settings={settings} />
-              </div>
+            {/* Right - Calculator */}
+            <div>
+              <Calculator settings={settings} />
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Testimonials Section */}
-        <TestimonialsSection />
+      <ContactSection />
 
-        {/* Island Coverage Section */}
-        <IslandCoverage />
-
-        {/* Contact Section */}
-        <ContactSection />
-
-        {/* Footer */}
-        <Footer />
-      </div>
+      <Footer />
     </main>
   );
 }
