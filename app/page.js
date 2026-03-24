@@ -1,8 +1,10 @@
 import Hero from "./_components/Hero";
+import TrustBar from "./_components/TrustBar";
+import StatsSection from "./_components/StatsSection";
 import ServicesGrid from "./_components/ServicesGrid";
 import Calculator from "./_components/Calculator";
-import AboutSection from "./_components/AboutSection";
 import TestimonialsSection from "./_components/TestimonialsSection";
+import FaqAccordion from "./_components/FaqAccordion";
 import ContactSection from "./_components/ContactSection";
 import Footer from "./_components/Footer";
 import settings from "../data/calculator-settings.json";
@@ -12,11 +14,11 @@ export default function Home() {
     <main>
       <Hero />
 
+      <TrustBar />
+
+      <StatsSection />
+
       <ServicesGrid />
-
-      <AboutSection />
-
-      <TestimonialsSection />
 
       {/* Solar Estimator */}
       <section id="estimate" className="bg-cream py-20 md:py-28">
@@ -56,6 +58,10 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <TestimonialsSection />
+
+      <FaqAccordion />
 
       <ContactSection />
 

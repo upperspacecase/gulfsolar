@@ -71,7 +71,7 @@ export default function FaqAccordion() {
                         >
                             <button
                                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                                className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-gray-50 transition-colors"
+                                className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-gray-50 transition-colors cursor-pointer"
                             >
                                 <span className="text-lg font-semibold text-charcoal pr-4">
                                     {faq.question}
@@ -79,7 +79,7 @@ export default function FaqAccordion() {
                                 <motion.span
                                     animate={{ rotate: openIndex === index ? 45 : 0 }}
                                     transition={{ duration: 0.2 }}
-                                    className="flex-shrink-0 w-8 h-8 rounded-full bg-orange/10 flex items-center justify-center text-orange text-xl font-medium"
+                                    className="flex-shrink-0 w-10 h-10 rounded-full bg-orange/10 flex items-center justify-center text-orange text-xl font-medium"
                                 >
                                     +
                                 </motion.span>

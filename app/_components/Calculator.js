@@ -133,7 +133,7 @@ export default function Calculator({ settings }) {
               <input
                 type="number"
                 min="0"
-                className="w-full pl-8 pr-4 py-3 bg-cream border border-stone/15 focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all"
+                className="w-full pl-8 pr-4 py-3.5 bg-cream border border-stone/15 text-base focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all"
                 value={monthlyBill}
                 onChange={(event) => setMonthlyBill(event.target.value)}
                 placeholder="220"
@@ -146,7 +146,7 @@ export default function Calculator({ settings }) {
               Roof type
             </span>
             <select
-              className="w-full px-4 py-3 bg-cream border border-stone/15 focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all appearance-none cursor-pointer"
+              className="w-full px-4 py-3.5 bg-cream border border-stone/15 text-base focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all appearance-none cursor-pointer"
               value={roofType}
               onChange={(event) => setRoofType(event.target.value)}
             >
@@ -158,7 +158,7 @@ export default function Calculator({ settings }) {
           <label className="flex items-center gap-3 cursor-pointer">
             <input
               type="checkbox"
-              className="w-5 h-5 border-stone/20 text-terracotta focus:ring-terracotta cursor-pointer"
+              className="w-6 h-6 min-w-[24px] border-stone/20 text-terracotta focus:ring-terracotta cursor-pointer"
               checked={homeDuringDay}
               onChange={(event) => setHomeDuringDay(event.target.checked)}
             />
@@ -176,7 +176,7 @@ export default function Calculator({ settings }) {
               <summary className="cursor-pointer text-xs text-white/60 hover:text-white underline list-none">
                 Assumptions
               </summary>
-              <ul className="absolute right-0 top-full mt-2 w-64 bg-white text-stone p-4 text-xs space-y-2 z-10 border border-stone/15">
+              <ul className="absolute right-0 top-full mt-2 w-full sm:w-64 bg-white text-stone p-4 text-xs space-y-2 z-10 border border-stone/15">
                 {settings.assumptions.map((item) => (
                   <li key={item} className="leading-relaxed">
                     {item}
@@ -232,7 +232,7 @@ export default function Calculator({ settings }) {
             </span>
             <input
               type="email"
-              className="w-full px-4 py-3 bg-cream border border-stone/15 focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all"
+              className="w-full px-4 py-3.5 bg-cream border border-stone/15 text-base focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="you@email.com"

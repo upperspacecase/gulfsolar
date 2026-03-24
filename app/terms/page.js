@@ -139,8 +139,8 @@ export default function TermsPage() {
                         <h2 className="text-2xl font-semibold text-white mb-4">11. Contact</h2>
                         <p>
                             For any questions about these terms, please contact us at{" "}
-                            <a href="mailto:hello@gulfsolar.co.nz" className="text-orange hover:text-orange-light">
-                                hello@gulfsolar.co.nz
+                            <a href="mailto:info@gulfsolar.co.nz" className="text-orange hover:text-orange-light">
+                                info@gulfsolar.co.nz
                             </a>{" "}
                             or call +64 21 123 456.
                         </p>

@@ -124,10 +124,11 @@ export default function TestimonialsSection() {
                     setDirection(i > current ? 1 : -1);
                     setCurrent(i);
                   }}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${i === current ? "bg-terracotta w-6" : "bg-cream/30"
-                    }`}
+                  className="p-2 cursor-pointer"
                   aria-label={`Go to testimonial ${i + 1}`}
-                />
+                >
+                  <span className={`block h-2 rounded-full transition-all duration-300 ${i === current ? "bg-terracotta w-6" : "bg-cream/30 w-2"}`} />
+                </button>
               ))}
             </div>
 

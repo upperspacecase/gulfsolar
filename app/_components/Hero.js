@@ -9,6 +9,7 @@ const navLinks = [
   { label: "About", href: "#about" },
   { label: "Testimonials", href: "#testimonials" },
   { label: "Estimate", href: "#estimate" },
+  { label: "FAQ", href: "#faq" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -46,7 +47,7 @@ export default function Hero() {
 
           <div className="flex items-center gap-4">
             <a
-              href="tel:+6421123456"
+              href="tel:+6480076527"
               className="hidden md:inline-flex items-center gap-2 text-sm font-medium text-stone hover:text-terracotta transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,7 +57,7 @@ export default function Hero() {
             </a>
             <a
               href="#contact"
-              className="hidden sm:inline-block rounded-full border border-stone px-6 py-2.5 text-sm font-medium text-stone transition-all hover:bg-stone hover:text-cream"
+              className="hidden sm:inline-block rounded-full border border-stone px-6 py-3 text-sm font-medium text-stone transition-all hover:bg-stone hover:text-cream min-h-[44px] flex items-center"
             >
               Get in Touch
             </a>
@@ -64,12 +65,12 @@ export default function Hero() {
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="flex flex-col items-center justify-center gap-1.5 lg:hidden p-2"
+              className="flex flex-col items-center justify-center gap-2 lg:hidden p-3 min-w-[44px] min-h-[44px]"
               aria-label="Toggle mobile menu"
             >
-              <span className={`block h-0.5 w-6 bg-stone transition-all duration-300 ${mobileOpen ? "translate-y-2 rotate-45" : ""}`} />
+              <span className={`block h-0.5 w-6 bg-stone transition-all duration-300 ${mobileOpen ? "translate-y-[10px] rotate-45" : ""}`} />
               <span className={`block h-0.5 w-6 bg-stone transition-all duration-300 ${mobileOpen ? "opacity-0" : ""}`} />
-              <span className={`block h-0.5 w-6 bg-stone transition-all duration-300 ${mobileOpen ? "-translate-y-2 -rotate-45" : ""}`} />
+              <span className={`block h-0.5 w-6 bg-stone transition-all duration-300 ${mobileOpen ? "-translate-y-[10px] -rotate-45" : ""}`} />
             </button>
           </div>
         </div>
@@ -146,7 +147,7 @@ export default function Hero() {
                     Get in Touch
                   </a>
                   <a
-                    href="tel:+6421123456"
+                    href="tel:+6480076527"
                     className="rounded-full border border-cream/40 px-8 py-4 text-center font-medium text-cream transition-colors hover:bg-cream/10"
                   >
                     Call 0800 SOLAR

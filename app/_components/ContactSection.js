@@ -36,7 +36,7 @@ export default function ContactSection() {
                 </svg>
                 <div>
                   <p className="text-xs text-stone-muted uppercase tracking-wide">Phone</p>
-                  <a href="tel:+6421123456" className="text-stone font-medium hover:text-terracotta transition-colors">
+                  <a href="tel:+6480076527" className="text-stone font-medium hover:text-terracotta transition-colors">
                     0800 SOLAR (0800 765 27)
                   </a>
                 </div>
@@ -85,7 +85,7 @@ export default function ContactSection() {
               {/* TODO: Replace with Ferus API form embed */}
               <div className="space-y-4">
                 <a
-                  href="tel:+6421123456"
+                  href="tel:+6480076527"
                   className="flex items-center justify-center gap-3 w-full rounded-full bg-terracotta px-8 py-4 font-medium text-cream transition-all hover:bg-terracotta-dark text-lg"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">

@@ -20,6 +20,7 @@ export default function Footer() {
                 { label: "About", href: "#about" },
                 { label: "Testimonials", href: "#testimonials" },
                 { label: "Estimate", href: "#estimate" },
+                { label: "FAQ", href: "#faq" },
                 { label: "Contact", href: "#contact" },
               ].map((link) => (
                 <li key={link.label}>
@@ -39,7 +40,7 @@ export default function Footer() {
             <p className="text-cream font-medium text-sm mb-4">Contact</p>
             <ul className="space-y-2.5">
               <li>
-                <a href="tel:+6421123456" className="text-cream/50 text-sm hover:text-cream transition-colors">
+                <a href="tel:+6480076527" className="text-cream/50 text-sm hover:text-cream transition-colors">
                   0800 SOLAR
                 </a>
               </li>

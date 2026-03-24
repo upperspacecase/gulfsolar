@@ -81,8 +81,8 @@ export default function PrivacyPage() {
                             Under the Privacy Act 2020, you have the right to access and request
                             correction of your personal information. To make a request, contact
                             us at{" "}
-                            <a href="mailto:hello@gulfsolar.co.nz" className="text-orange hover:text-orange-light">
-                                hello@gulfsolar.co.nz
+                            <a href="mailto:info@gulfsolar.co.nz" className="text-orange hover:text-orange-light">
+                                info@gulfsolar.co.nz
                             </a>.
                         </p>
                     </section>
@@ -109,8 +109,8 @@ export default function PrivacyPage() {
                         <p>
                             If you have any questions about this privacy policy or our data
                             practices, please contact us at{" "}
-                            <a href="mailto:hello@gulfsolar.co.nz" className="text-orange hover:text-orange-light">
-                                hello@gulfsolar.co.nz
+                            <a href="mailto:info@gulfsolar.co.nz" className="text-orange hover:text-orange-light">
+                                info@gulfsolar.co.nz
                             </a>{" "}
                             or call +64 21 123 456.
                         </p>

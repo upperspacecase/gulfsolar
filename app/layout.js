@@ -1,6 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import "maplibre-gl/dist/maplibre-gl.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,8 +54,8 @@ export default function RootLayout({ children }) {
     description:
       "Premium solar panel installation for Waiheke Island, Great Barrier Island, and the Hauraki Gulf.",
     url: "https://gulfsolar.co.nz",
-    telephone: "+64211234567",
-    email: "hello@gulfsolar.co.nz",
+    telephone: "+6480076527",
+    email: "info@gulfsolar.co.nz",
     areaServed: {
       "@type": "GeoCircle",
       geoMidpoint: {

@@ -111,7 +111,7 @@ export default function TrustBar() {
                                 className="flex flex-col items-center gap-3 p-5 rounded-xl bg-white shadow-card hover:shadow-card-hover transition-shadow"
                             >
                                 <span className="text-orange">{cert.icon}</span>
-                                <span className="text-xs font-semibold text-charcoal/70 text-center whitespace-nowrap">
+                                <span className="text-xs font-semibold text-charcoal/70 text-center">
                                     {cert.label}
                                 </span>
                             </div>

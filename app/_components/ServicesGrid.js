@@ -107,7 +107,7 @@ export default function ServicesGrid() {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Your name"
-                    className="w-full px-4 py-3 bg-cream border border-stone/15 text-sm text-stone placeholder:text-stone/30 focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all"
+                    className="w-full px-4 py-3.5 bg-cream border border-stone/15 text-base text-stone placeholder:text-stone/30 focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all"
                   />
                 </div>
                 <div>
@@ -118,7 +118,7 @@ export default function ServicesGrid() {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="021 123 4567"
-                    className="w-full px-4 py-3 bg-cream border border-stone/15 text-sm text-stone placeholder:text-stone/30 focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all"
+                    className="w-full px-4 py-3.5 bg-cream border border-stone/15 text-base text-stone placeholder:text-stone/30 focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all"
                   />
                 </div>
               </div>
@@ -132,7 +132,7 @@ export default function ServicesGrid() {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="you@email.com"
-                  className="w-full px-4 py-3 bg-cream border border-stone/15 text-sm text-stone placeholder:text-stone/30 focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all"
+                  className="w-full px-4 py-3.5 bg-cream border border-stone/15 text-base text-stone placeholder:text-stone/30 focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all"
                 />
               </div>
 
@@ -142,7 +142,7 @@ export default function ServicesGrid() {
                   name="island"
                   value={formData.island}
                   onChange={handleChange}
-                  className="w-full px-4 py-3 bg-cream border border-stone/15 text-sm text-stone focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all appearance-none cursor-pointer"
+                  className="w-full px-4 py-3.5 bg-cream border border-stone/15 text-base text-stone focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Select an island</option>
                   <option value="waiheke">Waiheke Island</option>
@@ -163,7 +163,7 @@ export default function ServicesGrid() {
                   value={formData.message}
                   onChange={handleChange}
                   placeholder="What are your solar goals?"
-                  className="w-full px-4 py-3 bg-cream border border-stone/15 text-sm text-stone placeholder:text-stone/30 focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all resize-none"
+                  className="w-full px-4 py-3.5 bg-cream border border-stone/15 text-base text-stone placeholder:text-stone/30 focus:outline-none focus:ring-1 focus:ring-terracotta focus:border-terracotta transition-all resize-none"
                 />
               </div>
 
