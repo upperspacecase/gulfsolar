@@ -36,8 +36,8 @@ export default function ContactSection() {
                 </svg>
                 <div>
                   <p className="text-xs text-stone-muted uppercase tracking-wide">Phone</p>
-                  <a href="tel:+6480076527" className="text-stone font-medium hover:text-terracotta transition-colors">
-                    0800 SOLAR (0800 765 27)
+                  <a href="tel:+64225225012" className="text-stone font-medium hover:text-terracotta transition-colors">
+                    +64 22 522 5012
                   </a>
                 </div>
               </div>
@@ -85,13 +85,13 @@ export default function ContactSection() {
               {/* TODO: Replace with Ferus API form embed */}
               <div className="space-y-4">
                 <a
-                  href="tel:+6480076527"
+                  href="tel:+64225225012"
                   className="flex items-center justify-center gap-3 w-full rounded-full bg-terracotta px-8 py-4 font-medium text-cream transition-all hover:bg-terracotta-dark text-lg"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
-                  Call 0800 SOLAR
+                  Call +64 22 522 5012
                 </a>
                 <a
                   href="mailto:info@gulfsolar.co.nz"

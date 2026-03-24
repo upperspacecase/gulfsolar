@@ -1,15 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata = {
   title: "Gulf Solar | Waiheke Island Solar Installers",
@@ -54,7 +43,7 @@ export default function RootLayout({ children }) {
     description:
       "Premium solar panel installation for Waiheke Island, Great Barrier Island, and the Hauraki Gulf.",
     url: "https://gulfsolar.co.nz",
-    telephone: "+6480076527",
+    telephone: "+64225225012",
     email: "info@gulfsolar.co.nz",
     areaServed: {
       "@type": "GeoCircle",
@@ -83,7 +72,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className="antialiased"
       >
         {children}
       </body>

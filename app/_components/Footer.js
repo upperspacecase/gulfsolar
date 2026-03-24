@@ -40,8 +40,8 @@ export default function Footer() {
             <p className="text-cream font-medium text-sm mb-4">Contact</p>
             <ul className="space-y-2.5">
               <li>
-                <a href="tel:+6480076527" className="text-cream/50 text-sm hover:text-cream transition-colors">
-                  0800 SOLAR
+                <a href="tel:+64225225012" className="text-cream/50 text-sm hover:text-cream transition-colors">
+                  +64 22 522 5012
                 </a>
               </li>
               <li>

@@ -1,6 +1,5 @@
 import Hero from "./_components/Hero";
-import TrustBar from "./_components/TrustBar";
-import StatsSection from "./_components/StatsSection";
+import AboutSection from "./_components/AboutSection";
 import ServicesGrid from "./_components/ServicesGrid";
 import Calculator from "./_components/Calculator";
 import TestimonialsSection from "./_components/TestimonialsSection";
@@ -16,9 +15,7 @@ export default function Home() {
     <main>
       <Hero />
 
-      <TrustBar />
-
-      <StatsSection />
+      <AboutSection />
 
       <ServicesGrid />
 

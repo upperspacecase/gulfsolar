@@ -7,8 +7,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        serif: ['Libre Baskerville', 'Georgia', 'Times New Roman', 'serif'],
+        sans: ['Montserrat', 'sans-serif'],
+        serif: ['Montserrat', 'sans-serif'],
       },
       colors: {
         cream: "#F7F7F2",
