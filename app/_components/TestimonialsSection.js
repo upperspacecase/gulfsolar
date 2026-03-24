@@ -59,7 +59,7 @@ export default function TestimonialsSection() {
   };
 
   return (
-    <section ref={ref} id="testimonials" className="bg-stone py-20 md:py-28 overflow-hidden">
+    <section ref={ref} id="testimonials" className="bg-stone/80 backdrop-blur-sm py-20 md:py-28 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Header */}
         <motion.div

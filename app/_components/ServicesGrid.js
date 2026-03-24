@@ -49,7 +49,7 @@ export default function ServicesGrid() {
   };
 
   return (
-    <section ref={ref} id="services" className="bg-cream py-20 md:py-28">
+    <section ref={ref} id="services" className="bg-cream/80 backdrop-blur-sm py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Quote Form */}
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">

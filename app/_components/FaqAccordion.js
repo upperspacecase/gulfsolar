@@ -42,7 +42,7 @@ export default function FaqAccordion() {
     const [openIndex, setOpenIndex] = useState(null);
 
     return (
-        <section ref={ref} id="faq" className="bg-white py-24 md:py-32">
+        <section ref={ref} id="faq" className="bg-white/80 backdrop-blur-sm py-24 md:py-32">
             <div className="max-w-3xl mx-auto px-6 lg:px-8">
                 {/* Header */}
                 <motion.div

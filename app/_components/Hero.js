@@ -19,7 +19,7 @@ export default function Hero() {
   return (
     <>
       {/* ── Navbar ── */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-cream/95 backdrop-blur-sm border-b border-stone/10">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-cream/70 backdrop-blur-sm border-b border-stone/10">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-20">
           <a href="#" className="flex items-center flex-shrink-0">
             <Image
@@ -112,14 +112,7 @@ export default function Hero() {
       {/* ── Hero Section ── */}
       <section className="relative pt-20">
         <div className="relative min-h-[600px] md:min-h-[700px] overflow-hidden">
-          <Image
-            src="/hero-aerial-gulf.png"
-            alt="Aerial view of Waiheke Island and the Hauraki Gulf"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-stone/70 via-stone/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-stone/60 via-stone/20 to-transparent" />
 
           <div className="absolute inset-0 flex items-end pb-20 md:pb-28">
             <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full">

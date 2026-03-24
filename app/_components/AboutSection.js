@@ -20,7 +20,7 @@ export default function AboutSection() {
     const isInView = useInView(ref, { once: true, margin: "-100px" });
 
     return (
-        <section ref={ref} id="about" className="bg-white py-20 md:py-28">
+        <section ref={ref} id="about" className="bg-white/80 backdrop-blur-sm py-20 md:py-28">
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
                 <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
                     {/* Left — Image */}

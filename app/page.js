@@ -7,10 +7,12 @@ import TestimonialsSection from "./_components/TestimonialsSection";
 import FaqAccordion from "./_components/FaqAccordion";
 import ContactSection from "./_components/ContactSection";
 import Footer from "./_components/Footer";
+import ScrollVideoBackground from "./_components/ScrollVideoBackground";
 import settings from "../data/calculator-settings.json";
 
 export default function Home() {
   return (
+    <ScrollVideoBackground>
     <main>
       <Hero />
 
@@ -21,7 +23,7 @@ export default function Home() {
       <ServicesGrid />
 
       {/* Solar Estimator */}
-      <section id="estimate" className="bg-cream py-20 md:py-28">
+      <section id="estimate" className="bg-cream/80 backdrop-blur-sm py-20 md:py-28">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left - Text */}
@@ -67,5 +69,6 @@ export default function Home() {
 
       <Footer />
     </main>
+    </ScrollVideoBackground>
   );
 }

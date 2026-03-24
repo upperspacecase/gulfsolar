@@ -93,7 +93,7 @@ export default function TrustBar() {
     const isInView = useInView(ref, { once: true, margin: "-50px" });
 
     return (
-        <section ref={ref} className="bg-offwhite py-20 md:py-28">
+        <section ref={ref} className="bg-offwhite/80 backdrop-blur-sm py-20 md:py-28">
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
                 {/* Partner Badges */}
                 <motion.div
