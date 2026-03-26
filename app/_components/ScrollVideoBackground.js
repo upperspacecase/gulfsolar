@@ -17,35 +17,44 @@ export default function ScrollVideoBackground({ children }) {
   const framesRef = useRef([]);
   const currentFrameRef = useRef(0);
   const rafRef = useRef(null);
-  const [loading, setLoading] = useState(true);
-  const [progress, setProgress] = useState(0);
+  const [ready, setReady] = useState(false);
 
-  // Preload all frames in batches
+  // Load frames non-blocking in background
   useEffect(() => {
+    // Respect reduced motion preference
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    if (prefersReducedMotion) return;
+
     const frames = [];
 
     const loadFrame = (index) =>
-      new Promise((resolve, reject) => {
+      new Promise((resolve) => {
         const img = new Image();
         img.onload = () => {
           frames[index] = img;
           resolve();
         };
-        img.onerror = reject;
+        img.onerror = () => resolve(); // Skip failed frames silently
         img.src = getFrameUrl(index + 1);
       });
 
     const loadAllFrames = async () => {
-      for (let i = 0; i < TOTAL_FRAMES; i += BATCH_SIZE) {
+      // Load frame 0 first for immediate canvas draw
+      await loadFrame(0);
+      framesRef.current = frames;
+      setReady(true);
+
+      // Load remaining frames in background batches
+      for (let i = 1; i < TOTAL_FRAMES; i += BATCH_SIZE) {
         const batch = [];
         for (let j = i; j < Math.min(i + BATCH_SIZE, TOTAL_FRAMES); j++) {
           batch.push(loadFrame(j));
         }
         await Promise.all(batch);
-        setProgress(Math.min(i + BATCH_SIZE, TOTAL_FRAMES) / TOTAL_FRAMES);
+        framesRef.current = frames;
       }
-      framesRef.current = frames;
-      setLoading(false);
     };
 
     loadAllFrames();
@@ -77,11 +86,16 @@ export default function ScrollVideoBackground({ children }) {
     ctx.drawImage(frame, drawX, drawY, drawW, drawH);
   };
 
-  // Draw frames based on total page scroll progress
+  // Draw frames based on scroll position
   useEffect(() => {
-    if (loading) return;
+    if (!ready) return;
 
     const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    // Size canvas
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     drawFrame(canvas, 0);
 
     const onScroll = () => {
@@ -89,81 +103,73 @@ export default function ScrollVideoBackground({ children }) {
       rafRef.current = requestAnimationFrame(() => {
         rafRef.current = null;
         const scrollTop = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const fraction = docHeight > 0 ? Math.max(0, Math.min(1, scrollTop / docHeight)) : 0;
+        const docHeight =
+          document.documentElement.scrollHeight - window.innerHeight;
+        const fraction =
+          docHeight > 0 ? Math.max(0, Math.min(1, scrollTop / docHeight)) : 0;
         const frameIndex = Math.min(
           Math.floor(fraction * TOTAL_FRAMES),
           TOTAL_FRAMES - 1
         );
 
         if (frameIndex !== currentFrameRef.current) {
+          // Use the requested frame if loaded, otherwise find nearest loaded frame
+          const frames = framesRef.current;
+          let drawIndex = frameIndex;
+          if (!frames[frameIndex]) {
+            for (let d = 1; d < TOTAL_FRAMES; d++) {
+              if (frames[frameIndex - d]) {
+                drawIndex = frameIndex - d;
+                break;
+              }
+              if (frames[frameIndex + d]) {
+                drawIndex = frameIndex + d;
+                break;
+              }
+            }
+          }
           currentFrameRef.current = frameIndex;
-          drawFrame(canvas, frameIndex);
+          drawFrame(canvas, drawIndex);
         }
       });
     };
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [loading]);
-
-  // Resize canvas to match viewport
-  useEffect(() => {
-    if (loading) return;
-
-    const canvas = canvasRef.current;
-    const resizeCanvas = () => {
+    const onResize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       drawFrame(canvas, currentFrameRef.current);
     };
 
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-    return () => window.removeEventListener("resize", resizeCanvas);
-  }, [loading]);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [ready]);
 
   return (
     <>
-      {/* Loading overlay */}
-      {loading && (
-        <div
+      {/* Static fallback image — visible immediately */}
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: -2,
+        }}
+      >
+        <img
+          src="/hero-aerial-gulf.png"
+          alt=""
           style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 50,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "#1a1a1a",
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
           }}
-        >
-          <div
-            style={{
-              width: "200px",
-              height: "2px",
-              background: "#333",
-              borderRadius: "1px",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                height: "100%",
-                background: "#fff",
-                width: `${Math.round(progress * 100)}%`,
-                transition: "width 0.3s ease",
-              }}
-            />
-          </div>
-          <p style={{ color: "#666", fontSize: "12px", marginTop: "12px", letterSpacing: "0.1em" }}>
-            {Math.round(progress * 100)}%
-          </p>
-        </div>
-      )}
+        />
+      </div>
 
-      {/* Fixed background canvas */}
+      {/* Scroll-driven canvas — draws over fallback once frames load */}
       <canvas
         ref={canvasRef}
         style={{
@@ -172,10 +178,11 @@ export default function ScrollVideoBackground({ children }) {
           width: "100%",
           height: "100%",
           zIndex: -1,
+          willChange: "transform",
         }}
       />
 
-      {/* Page content flows normally on top */}
+      {/* Page content renders immediately */}
       {children}
     </>
   );

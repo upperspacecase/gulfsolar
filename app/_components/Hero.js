@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -15,15 +15,22 @@ const navLinks = [
 
 export default function Hero() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 100);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <>
       {/* ── Navbar ── */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-cream/70 backdrop-blur-sm border-b border-stone/10">
+      <header className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-sm border-b border-stone/10 transition-colors duration-300 ${scrolled ? "bg-cream/90" : "bg-cream/70"}`}>
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-20">
           <a href="#" className="flex items-center flex-shrink-0">
             <Image
-              src="/Add a heading.png"
+              src="/gulf-solar-logo.png"
               alt="Gulf Solar"
               width={220}
               height={46}
@@ -38,7 +45,7 @@ export default function Hero() {
               <a
                 key={item.label}
                 href={item.href}
-                className="text-sm font-medium text-stone-muted transition-colors hover:text-stone"
+                className="text-sm font-medium text-stone-muted transition-colors hover:text-stone py-3"
               >
                 {item.label}
               </a>
@@ -111,7 +118,7 @@ export default function Hero() {
 
       {/* ── Hero Section ── */}
       <section className="relative pt-20">
-        <div className="relative min-h-[600px] md:min-h-[700px] overflow-hidden">
+        <div className="relative min-h-[600px] md:min-h-[85vh] overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-t from-stone/60 via-stone/20 to-transparent" />
 
           <div className="absolute inset-0 flex items-end pb-20 md:pb-28">

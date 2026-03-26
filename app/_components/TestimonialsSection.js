@@ -15,7 +15,7 @@ const testimonials = [
     quote: "Being off-grid on Great Barrier seemed daunting until Gulf Solar designed our system. Two years in and we haven't had a single day without power. The battery setup is bulletproof.",
     name: "James Whitfield",
     location: "Great Barrier Island",
-    image: "/testimonial-man.png",
+    image: "/Statics/DSC00171.JPG",
   },
   {
     quote: "The logistics of getting solar to our island property could have been a nightmare, but Gulf Solar handled everything — barges, permits, installation. We just watched it happen.",
@@ -59,7 +59,7 @@ export default function TestimonialsSection() {
   };
 
   return (
-    <section ref={ref} id="testimonials" className="bg-stone/80 backdrop-blur-sm py-20 md:py-28 overflow-hidden">
+    <section ref={ref} id="testimonials" className="bg-stone/80 backdrop-blur-sm py-16 md:py-24 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Header */}
         <motion.div
@@ -90,19 +90,22 @@ export default function TestimonialsSection() {
               className="grid md:grid-cols-2 gap-8 md:gap-16 items-center"
             >
               {/* Image */}
-              <div className="overflow-hidden aspect-[4/3]">
+              <div className="overflow-hidden aspect-[3/2]">
                 <Image
                   src={t.image}
                   alt={t.name}
-                  width={800}
+                  width={900}
                   height={600}
                   className="w-full h-full object-cover"
                 />
               </div>
 
               {/* Quote */}
-              <div>
-                <p className="font-serif italic text-xl md:text-2xl text-cream/90 leading-relaxed mb-8">
+              <div className="relative">
+                <span className="absolute -top-8 -left-2 font-serif text-[120px] leading-none text-terracotta/20 select-none" aria-hidden="true">
+                  &ldquo;
+                </span>
+                <p className="font-serif italic text-xl md:text-2xl text-cream/90 leading-relaxed mb-8 relative">
                   &ldquo;{t.quote}&rdquo;
                 </p>
                 <div className="border-t border-cream/15 pt-6">

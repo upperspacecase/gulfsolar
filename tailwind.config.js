@@ -8,7 +8,7 @@ module.exports = {
     extend: {
       fontFamily: {
         sans: ['Montserrat', 'sans-serif'],
-        serif: ['Montserrat', 'sans-serif'],
+        serif: ['DM Serif Display', 'serif'],
       },
       colors: {
         cream: "#F7F7F2",
@@ -22,23 +22,6 @@ module.exports = {
           light: "#D4705A",
           dark: "#A44A32",
         },
-        // Keep legacy tokens for backward compat
-        charcoal: {
-          DEFAULT: "#1A1A1A",
-          light: "#252525",
-          dark: "#111111",
-        },
-        orange: {
-          DEFAULT: "#C75B3F",
-          light: "#D4705A",
-          dark: "#A44A32",
-        },
-        amber: {
-          DEFAULT: "#D4A574",
-          light: "#E2BB8E",
-          dark: "#B88A5E",
-        },
-        offwhite: "#F7F7F2",
       },
     },
   },
